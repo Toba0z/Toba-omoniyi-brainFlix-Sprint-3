@@ -7,19 +7,18 @@ const { v4: uuidv4 } = require("uuid"); // Correct import for uuidv4
 
 const videosFilePath = "./Data/video-details.json";
 
-//Get all videos
+// Route to get all videos with summary details
 router.get("/", (req, res) => {
   const videosDataShortVersion = fs.readFileSync("./Data/video-details.json");
   const videosJson = JSON.parse(videosDataShortVersion);
   res.status(200).send(videosJson);
 });
 
-//Get all videso Data by ID
+// Route to get a single video's data by its ID
 router.get("/:videoid", (req, res) => {
   const { videoid } = req.params;
   console.log("params: ", videoid);
   try {
-    // const videosDataPath = path.join(__dirname, './Data/video-details.json');
     const videosDataByIdVersion = fs.readFileSync("./Data/video-details.json");
     const videos = JSON.parse(videosDataByIdVersion);
     const videoIdSelected = videos.find((videoItem) => videoItem.id == videoid);
@@ -36,7 +35,7 @@ router.get("/:videoid", (req, res) => {
   }
 });
 
-//POST comment API
+// Route to post a new comment to a specific video
 router.post("/:videoid/comments", (req, res) => {
   const { videoid } = req.params;
   const { name, comment } = req.body;
@@ -69,7 +68,7 @@ router.post("/:videoid/comments", (req, res) => {
   }
 });
 
-//delete comment router.
+// Route to delete a specific comment from a video
 router.delete("/:videoID/comments/:commentID", (req, res) => {
   const { videoID, commentID } = req.params; // Ensure these match the route definition
   try {
@@ -99,8 +98,8 @@ router.delete("/:videoID/comments/:commentID", (req, res) => {
   }
 });
 
-//upload videos router
 
+// Route to upload a new video
 router.post("/", (req, res) => {
   try {
     const { title, description } = req.body;
@@ -112,7 +111,7 @@ router.post("/", (req, res) => {
       channel: "Tobiloba Omoniyi",
       image: "http://localhost:8088/images/img1.jpg",
       views: "100,984",
-      likes: "800,552",
+      likes: "8552",
       duration: "26:52",
       video: "http://localhost:8088/stream",
       timestamp: Date.now(),
@@ -127,6 +126,7 @@ router.post("/", (req, res) => {
   }
 });
 
+// Route to update likes for a video
 router.put("/:videoId/likes", (req, res) => {
   const { videoId } = req.params;
   const videosData = JSON.parse(fs.readFileSync(videosFilePath, "utf8"));
@@ -142,5 +142,4 @@ router.put("/:videoId/likes", (req, res) => {
   fs.writeFileSync(videosFilePath, JSON.stringify(videosData, null, 2));
   res.status(200).json({ likes: videosData[videosDataIndex].likes });
 });
-
 module.exports = router;
